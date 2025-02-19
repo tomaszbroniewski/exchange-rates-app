@@ -1,0 +1,57 @@
+<ng-template #loading>
+  <div class="load-table">
+    <span>Loading...</span>
+  </div>
+</ng-template>
+
+<div class="tables-container">
+  <div class="table-voters">
+    <div class="table-header">
+      <h2 class="table-title">Tabela kursów walut</h2>
+      <mat-form-field appearance="fill">
+        <mat-label>Wybierz tabelę</mat-label>
+        <mat-select [value]="selectedTableIndex()" (selectionChange)="updateTable($event.value)">
+          <mat-option *ngFor="let table of tables(); index as i" [value]="i">
+            {{ i + 1 }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="scrollable-table-container" *ngIf="tables().length; else loading">
+      <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="currency">
+          <mat-header-cell *matHeaderCellDef class="column-name">
+            Nazwa waluty
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element" class="column-name">
+            {{ element.currency | titlecase}}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="code">
+          <mat-header-cell *matHeaderCellDef class="has-voted">
+            Kod waluty
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element" class="has-voted">
+            {{ element.code }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="mid">
+          <mat-header-cell *matHeaderCellDef class="has-voted">
+            Kurs
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element" class="has-voted">
+            {{ element.mid}}
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row
+          *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row
+          *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="10.0.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="6.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.33" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.33" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.33" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="9.32.0.97167">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ExchangeRatesApp.Application\ExchangeRatesApp.Application.csproj" />
+    <ProjectReference Include="..\ExchangeRatesApp.Domain\ExchangeRatesApp.Domain.csproj" />
+    <ProjectReference Include="..\ExchangeRatesApp.SharedCommon\ExchangeRatesApp.SharedCommon.csproj" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<Using Include="ExchangeRatesApp.SharedCommon" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Database\Migrations\" />
+	</ItemGroup>
+
+</Project>

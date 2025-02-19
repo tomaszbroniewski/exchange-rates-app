@@ -1,0 +1,39 @@
+# Use the official ASP.NET Core runtime as a parent image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+# Copy the solution file
+COPY ["ExchangeRatesApp.Api.sln", "ExchangeRatesAppApi/"]
+
+# Copy all project files for each library and application
+COPY ["ExchangeRatesApp.Api/ExchangeRatesApp.Api.csproj", "ExchangeRatesAppApi/ExchangeRatesApp.Api/"]
+COPY ["ExchangeRatesApp.Application/ExchangeRatesApp.Application.csproj", "ExchangeRatesAppApi/ExchangeRatesApp.Application/"]
+COPY ["ExchangeRatesApp.Domain/ExchangeRatesApp.Domain.csproj", "ExchangeRatesAppApi/ExchangeRatesApp.Domain/"]
+COPY ["ExchangeRatesApp.Dto/ExchangeRatesApp.Dto.csproj", "ExchangeRatesAppApi/ExchangeRatesApp.Dto/"]
+COPY ["ExchangeRatesApp.Infrastructure/ExchangeRatesApp.Infrastructure.csproj", "ExchangeRatesAppApi/ExchangeRatesApp.Infrastructure/"]
+COPY ["ExchangeRatesApp.SharedCommon/ExchangeRatesApp.SharedCommon.csproj", "ExchangeRatesAppApi/ExchangeRatesApp.SharedCommon/"]
+
+COPY ["ExchangeRatesApp.Application.Tests/ExchangeRatesApp.Application.Tests.csproj", "ExchangeRatesAppApi/ExchangeRatesApp.Application.Tests/"]
+COPY ["ExchangeRatesApp.Domain.Tests/ExchangeRatesApp.Domain.Tests.csproj", "ExchangeRatesAppApi/ExchangeRatesApp.Domain.Tests/"]
+COPY ["ExchangeRatesApp.Tests.Common/ExchangeRatesApp.Tests.Common.csproj", "ExchangeRatesAppApi/ExchangeRatesApp.Tests.Common/"]
+
+# Restore all dependencies for the solution
+RUN dotnet restore "ExchangeRatesAppApi/ExchangeRatesApp.Api.sln"
+
+# Copy all files and build the application
+COPY . ExchangeRatesAppApi/
+
+WORKDIR "/src/ExchangeRatesAppApi/ExchangeRatesApp.Api"
+RUN dotnet publish "ExchangeRatesApp.Api.csproj" -c Release -o /app/publish --no-restore
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+WORKDIR /app
+
+EXPOSE 80
+
+COPY --from=build /app/publish .
+
+COPY deploy/wait-for-it.sh /app/wait-for-it.sh
+RUN chmod +x /app/wait-for-it.sh
+
+ENTRYPOINT ["/app/wait-for-it.sh", "--timeout=30","ExchangeRatesAppdb:1433", "--", "dotnet", "ExchangeRatesApp.Api.dll"]

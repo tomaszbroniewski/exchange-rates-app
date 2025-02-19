@@ -1,0 +1,14 @@
+<div class="container">
+  <header class="header">
+    <h1>{{title}}</h1>
+
+    <div class="user-info" *ngIf="username()">
+      <span class="username">Zalogowany: {{ username() }}</span>
+      <button mat-raised-button color="accent" (click)="logout()">Wyloguj</button>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
